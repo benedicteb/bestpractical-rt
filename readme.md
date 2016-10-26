@@ -3,6 +3,14 @@
 This package allows you to communicate with Best Practical's Request Tracker via
 their REST API documented [here](https://rt-wiki.bestpractical.com/wiki/REST).
 
+## Install
+
+Install from GitHub.
+
+```
+$ npm install git://github.com/benedicteb/bestpractical-rt.git
+```
+
 ## Usage
 
 ```javascript
