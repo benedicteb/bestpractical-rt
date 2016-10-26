@@ -1,11 +1,15 @@
-var rtnode = require('../index');
+var RT = require('../index');
 var read = require('read');
 
 const username = 'rt-rapport';
 
+var afterSearch = function(result) {
+  console.log(result);
+}
+
 read({prompt: 'Password: ', silent: true}, function(error, input) {
   const password = input;
 
-  var rt = rtnode(username, password);
-  rt.search("queue = 'usit-mlm' and (status = 'open' or status='new')")
+  var rt = new RT(username, password);
+  rt.search("queue = 'usit-mlm' and (status = 'open' or status='new')", afterSearch)
 })

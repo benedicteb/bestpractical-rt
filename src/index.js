@@ -2,54 +2,55 @@ var request = require('request');
 var urljoin = require('url-join');
 
 // Enable cookie jar
-request = request.defaults({jar: true})
+request = request.defaults({jar: true});
 
-const uribase = 'https://rt.uio.no/REST/1.0/'
-var j = request.jar()
+const uribase = 'https://rt.uio.no/REST/1.0/';
 
-var RTObject = {
-  loggedIn: false,
+class RT {
+  constructor(username, password) {
+    this.username = username;
+    this.password = password;
+    this.loggedIn = false;
+  }
 
-  login: function(callback) {
+  login(callback) {
     const body = 'user=' + this.username + "&pass=" + this.password
 
     request.post({
       headers: {'content-type': 'application/x-www-form-urlencoded'},
       url: uribase,
       body: body,
-      jar: j,
     }, function(error, response, body) {
-      if (response.status_code == 200) {
+      if (response.statusCode == 200) {
         this.loggedIn = true;
         callback();
+        return;
       }
 
       this.loggedIn = false;
+      console.log(response.body);
     })
-  },
+  }
 
-  search: function(query, callback) {
-    var doQuery = function(jar) {
+  search(query, callback) {
+    var doQuery = function() {
       request({
-        url: urljoin(uribase, 'search/ticket'), {
-        query: query
+        url: urljoin(uribase, 'search/ticket'),
+        qs: {
+          query: query,
+        }
       }, function(error, response, body) {
-        console.log(response.body);
+        callback(response.body);
       })
     }
 
     if (!this.loggedIn) {
       this.login(doQuery);
+      return;
     }
 
     doQuery();
   }
-};
-
-function RT(username, password) {
-  RTObject.username = username;
-  RTObject.password = password;
-  return RTObject;
 }
 
 module.exports = RT;
