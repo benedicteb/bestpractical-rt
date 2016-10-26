@@ -40,16 +40,60 @@ class RT {
           query: query,
         }
       }, function(error, response, body) {
-        callback(response.body);
+        var lines = body.split(/\r?\n/);
+        const pattern = /^(\d+): (.+)$/;
+        var tickets = {};
+
+        for (var i in lines) {
+          var match = pattern.exec(lines[i]);
+
+          if (match) {
+            var id = parseInt(match[1]);
+            var subject = match[2];
+            tickets[id] = subject;
+          }
+        }
+
+        callback(tickets);
       })
     }
 
+    this._loginThenQuery(doQuery);
+  }
+
+  ticketProperties(ticketId, callback) {
+    var getTicketInfo = function() {
+      request({
+        url: urljoin(uribase, 'ticket', ticketId, 'show')
+      }, function(error, response, body) {
+        var lines = body.split(/\r?\n/);
+        const pattern = /^([^:]+): (.+)$/;
+        var ticketInfo = {};
+
+        for (var i in lines) {
+          var match = pattern.exec(lines[i]);
+
+          if (match) {
+            var name = match[1];
+            var value = match[2];
+            ticketInfo[name] = value;
+          }
+        }
+
+        callback(ticketInfo);
+      })
+    }
+
+    this._loginThenQuery(getTicketInfo);
+  }
+
+  _loginThenQuery(callback) {
     if (!this.loggedIn) {
-      this.login(doQuery);
+      this.login(callback);
       return;
     }
 
-    doQuery();
+    callback();
   }
 }
 
