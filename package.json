@@ -2,13 +2,13 @@
   "name": "rtnode",
   "version": "1.0.0",
   "description": "Utility for using the Request Tracker REST API.",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "compile": "babel --presets es2015,stage-0 -d lib/ src/",
     "prepublish": "npm run compile"
   },
-  "author": "= <=> (=)",
+  "author": "Benedicte Emilie Brækken <b@brkn.io> (https://personer.uio.no/benedebr)",
   "license": "MIT",
   "dependencies": {
     "read": "^1.0.7",
