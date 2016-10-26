@@ -15,7 +15,7 @@ $ npm install git://github.com/benedicteb/bestpractical-rt.git
 
 ```javascript
 const RT = require('bestpractical-rt');
-const rt = new RT('username', 'password', 'https://rt.uio.no');
+const rt = new RT('username', 'password', 'https://rt.yourserver.com');
 
 rt.search("Queue = 'something' AND Status = 'new'", function(result) {
   console.log(result);
