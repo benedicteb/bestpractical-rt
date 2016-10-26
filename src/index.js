@@ -4,13 +4,12 @@ var urljoin = require('url-join');
 // Enable cookie jar
 request = request.defaults({jar: true});
 
-const uribase = 'https://rt.uio.no/REST/1.0/';
-
 class RT {
-  constructor(username, password) {
+  constructor(username, password, host) {
     this.username = username;
     this.password = password;
     this.loggedIn = false;
+    this.uribase = urljoin(host, 'REST/1.0');
   }
 
   login(callback) {
@@ -18,7 +17,7 @@ class RT {
 
     request.post({
       headers: {'content-type': 'application/x-www-form-urlencoded'},
-      url: uribase,
+      url: this.uribase,
       body: body,
     }, function(error, response, body) {
       if (response.statusCode == 200) {
@@ -35,7 +34,7 @@ class RT {
   search(query, callback) {
     const doQuery = function() {
       request({
-        url: urljoin(uribase, 'search/ticket'),
+        url: urljoin(this.uribase, 'search/ticket'),
         qs: {
           query: query,
         }
@@ -64,7 +63,7 @@ class RT {
   ticketProperties(ticketId, callback) {
     const getTicketInfo = function() {
       request({
-        url: urljoin(uribase, 'ticket', ticketId, 'show')
+        url: urljoin(this.uribase, 'ticket', ticketId, 'show')
       }, function(error, response, body) {
         const lines = body.split(/\r?\n/);
         const pattern = /^([^:]+): (.+)$/;
@@ -82,9 +81,74 @@ class RT {
 
         callback(ticketInfo);
       })
-    }
+    }.bind(this);
 
     this._loginThenQuery(getTicketInfo);
+  }
+
+  ticketHistory(ticketId, callback) {
+    const getTicketHistory = function() {
+      request({
+        url: urljoin(this.uribase, 'ticket', ticketId, 'history')
+      }, function(error, response, body) {
+        const lines = body.split(/\r?\n/);
+        const pattern = /^(\d+): (.+)$/;
+        const historyElements = {};
+
+        for (const i in lines) {
+          const match = pattern.exec(lines[i]);
+
+          if (match) {
+            const id = parseInt(match[1]);
+            const action = match[2];
+            historyElements[id] = action;
+          }
+        }
+
+        callback(historyElements);
+      })
+    }.bind(this);
+
+    this._loginThenQuery(getTicketHistory);
+  }
+
+  ticketHistoryEntry(ticketId, historyId, callback) {
+    const getHistoryEntry = function() {
+      request({
+        url: urljoin(this.uribase, 'ticket', ticketId, 'history/id', historyId)
+      }, function(error, response, body) {
+        const contentPattern = /Content: ((.|\n)+)\n\nCreator/g;
+        const metaPattern = /^([^: ]+): (.+)$/;
+        const lines = body.split(/\r?\n/);
+        const historyEntry = {};
+
+        const contentMatch = contentPattern.exec(body);
+
+        if (contentMatch) {
+          let content = contentMatch[1];
+          content = content.replace(/         /g, '');
+          historyEntry['Content'] = content;
+        }
+
+        for (const i in lines) {
+          if (lines[i].indexOf('Content') == 0) {
+            continue;
+          }
+
+          const match = metaPattern.exec(lines[i]);
+
+          if (match) {
+            const name = match[1];
+            const value = match[2];
+            historyEntry[name] = value;
+          }
+        }
+
+        callback(historyEntry);
+      })
+    }.bind(this);
+
+    this._loginThenQuery(getHistoryEntry);
   }
 
   _loginThenQuery(callback) {
