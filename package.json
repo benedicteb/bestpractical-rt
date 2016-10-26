@@ -4,7 +4,9 @@
   "description": "Utility for using the Request Tracker REST API.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compile": "babel --presets es2015,stage-0 -d lib/ src/",
+    "prepublish": "npm run compile"
   },
   "author": "= <=> (=)",
   "license": "MIT",
@@ -12,5 +14,10 @@
     "read": "^1.0.7",
     "request": "^2.76.0",
     "url-join": "^1.1.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-stage-0": "^6.16.0"
   }
 }
