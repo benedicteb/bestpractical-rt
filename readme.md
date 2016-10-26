@@ -6,7 +6,7 @@ their REST API documented [here](https://rt-wiki.bestpractical.com/wiki/REST).
 ## Usage
 
 ```javascript
-const RT = require('rtnode');
+const RT = require('bestpractical-rt');
 const rt = new RT('username', 'password', 'https://rt.uio.no');
 
 rt.search("Queue = 'something' AND Status = 'new'", function(result) {

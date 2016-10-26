@@ -55,7 +55,7 @@ class RT {
 
         callback(tickets);
       })
-    }
+    }.bind(this);
 
     this._loginThenQuery(doQuery);
   }
