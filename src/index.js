@@ -33,23 +33,23 @@ class RT {
   }
 
   search(query, callback) {
-    var doQuery = function() {
+    const doQuery = function() {
       request({
         url: urljoin(uribase, 'search/ticket'),
         qs: {
           query: query,
         }
       }, function(error, response, body) {
-        var lines = body.split(/\r?\n/);
+        const lines = body.split(/\r?\n/);
         const pattern = /^(\d+): (.+)$/;
-        var tickets = {};
+        const tickets = {};
 
-        for (var i in lines) {
-          var match = pattern.exec(lines[i]);
+        for (const i in lines) {
+          const match = pattern.exec(lines[i]);
 
           if (match) {
-            var id = parseInt(match[1]);
-            var subject = match[2];
+            const id = parseInt(match[1]);
+            const subject = match[2];
             tickets[id] = subject;
           }
         }
@@ -62,20 +62,20 @@ class RT {
   }
 
   ticketProperties(ticketId, callback) {
-    var getTicketInfo = function() {
+    const getTicketInfo = function() {
       request({
         url: urljoin(uribase, 'ticket', ticketId, 'show')
       }, function(error, response, body) {
-        var lines = body.split(/\r?\n/);
+        const lines = body.split(/\r?\n/);
         const pattern = /^([^:]+): (.+)$/;
-        var ticketInfo = {};
+        const ticketInfo = {};
 
-        for (var i in lines) {
-          var match = pattern.exec(lines[i]);
+        for (const i in lines) {
+          const match = pattern.exec(lines[i]);
 
           if (match) {
-            var name = match[1];
-            var value = match[2];
+            const name = match[1];
+            const value = match[2];
             ticketInfo[name] = value;
           }
         }
