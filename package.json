@@ -1,5 +1,5 @@
 {
-  "name": "rtnode",
+  "name": "bestpractical-rt",
   "version": "1.0.0",
   "description": "Utility for using the Request Tracker REST API.",
   "main": "lib/index.js",
