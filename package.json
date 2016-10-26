@@ -11,7 +11,7 @@
   "author": "Benedicte Emilie Brækken <b@brkn.io> (https://personer.uio.no/benedebr)",
   "repository": {
     "type": "git",
-    "url": "git@github.com:benedicteb/bestpractical-rt.git",
+    "url": "git://github.com/benedicteb/bestpractical-rt.git"
   },
   "licenses": [
     {
