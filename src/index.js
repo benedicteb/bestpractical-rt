@@ -1,8 +1,10 @@
-var request = require('request');
-var urljoin = require('url-join');
+import Request from 'request';
+import urljoin from 'url-join';
 
 // Enable cookie jar
-request = request.defaults({jar: true});
+const request = Request.defaults({
+  jar: true
+});
 
 class RT {
   constructor(username, password, host) {
